@@ -1,0 +1,22 @@
+How to create an virtual environment in Python? 
+ 
+ --> This is optional, but its a great idea when you start a new project, also its easy. 
+
+* What is a virtual environment? 
+    First you need to understand what is a library or package. For each project you will need 
+    differents libraries, for example: If you want to perform math calculation you should import
+    the "math" library.  
+    Its not a good idea to install all the libreries in the same "space", if you have a project 
+    related with Data Science for sure you will need "Pandas" and if at the same time you are working
+    on a project that need to perform geospacial graphics you will need "Geopandas". 
+    The best thing to do its to create dos little spaces on your PC, one that have Pandas and the other one
+    that have Geopandas. 
+
+* How we do that? 
+1.- Install globally virtualenv with "pip install virtualenv" 
+2.- Navigate to the directory where you have the project. 
+3.- execute --> virtualenv [name_of_the_enviroment] on terminal. 
+        We usually named our environment "env" 
+4.- execute --> source env/bin/activate.  
+
+Now when we install a library that library only will work on the environment. 
