@@ -1,24 +1,40 @@
-from gc import callbacks
-from tkinter import *
-from tkinter import ttk
-from PIL import ImageTk, Image
 import requests
 import os 
+from tkinter import *
+from PIL import ImageTk, Image
 from pytube import YouTube
-from pytube.cli import on_progress
-
-#import downloader 
 
 
-#link1 = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+def get_video_name()-> None:
+    """ Este metodo toma como parametro interno el link 
+        de un video de Youtube y obtiene su nombre.
 
+        - Edita un Label de Tkinter y coloca el nombre del video.
+    """
+
+    yt = YouTube(video_link.get())
+    video_name.configure(text=yt.streams.first().default_filename)
+    video_name.text = yt.streams.first().default_filename
+    
+    
 def download_video()-> None :
-    yt = YouTube(video_link.get(), on_progress_callback=on_progress)
-    yt.streams.filter(file_extension="mp4").get_by_resolution("360p").download()
+    """ Descarga un video de youtube a partir del link
+        y lo guarda en la carpeta videos.
+    """
+    yt = YouTube(video_link.get())
+    yt.streams.filter(file_extension="mp4").get_by_resolution("360p").download('videos/')
 
 
-def link_handler(youtube_link):
+def link_handler(youtube_link:str):
+    """ Toma el link de un video de youtube y guarda 4 links diferentes
+        en un Array, dichos links son las miniaturas del video.
 
+    Args:
+        youtube_link (str): Link de un video de Youtube.
+
+    Returns:
+        Array: Array con los links de cada imagen de la miniatura del video
+    """
     
 
     # Toma 3 diferentes miniaturas de un mismo video de youtube.
@@ -44,13 +60,17 @@ def link_handler(youtube_link):
 
 
 def get_thumbnail():
- 
+    """ Utiliza el metodo link_handler y descarga las miniaturas de un video. 
+
+        Posteriormente coloca esas imagenes en un Frame de Tkinter
+    """
 
     # Toma los links
     img_link = link_handler(video_link.get())[0]
     img_link_1 = link_handler(video_link.get())[1]
     img_link_2 = link_handler(video_link.get())[2]
     img_link_3 = link_handler(video_link.get())[3]
+    
     
 
     # Descargar la imagen con la libreria requests.
@@ -76,30 +96,33 @@ def get_thumbnail():
 
     # Carga la imagen en el contexto de Tkinter y la coloca en un label.
 
+    # Comprueba si las imagenes ya existen
     if os.path.exists('img_temp/sample_image.png') and os.path.exists('img_temp/sample_image_1.png') :
-        # First thumbnail
+        
+        # Todos los Frame ya existen, aqui lo que hace es editarlos.
 
+        # Coloca la 1er miniatura en el Frame
         loaded_img = Image.open("img_temp/sample_image.png")
         resize_img = loaded_img.resize((250,180))
         imge = ImageTk.PhotoImage(resize_img)
         img_logo_temp.configure(image=imge)
         img_logo_temp.image = imge
 
-
+        # Coloca la 2da miniatura en el Frame
         loaded_img_1 = Image.open("img_temp/sample_image_1.png")
         resize_img_1 = loaded_img_1.resize((100,60))
         imge_1 = ImageTk.PhotoImage(resize_img_1)
         img_logo_temp_1.configure(image = imge_1)
         img_logo_temp_1.image = imge_1
    
-
+        # Coloca la 3er miniatura en el Frame
         loaded_img_2 = Image.open("img_temp/sample_image_2.png")
         resize_img_2 = loaded_img_2.resize((100,60))
         imge_2 = ImageTk.PhotoImage(resize_img_2)
         img_logo_temp_2.configure(image = imge_2)
         img_logo_temp_2.image = imge_2
 
-
+        # Coloca la 4ta miniatura en el Frame
         loaded_img_3 = Image.open("img_temp/sample_image_3.png")
         resize_img_3 = loaded_img_3.resize((100,60))
         imge_3 = ImageTk.PhotoImage(resize_img_3)
@@ -109,10 +132,12 @@ def get_thumbnail():
   
 
 
+# --- MAIN CODE ---
+
 root = Tk() # Objeto Tkinter
 root.config(bd=15) # Margen
 root.geometry('500x500') # Tamanio de la ventanda
-root.title("Youtube video downloader") # Titulo
+root.title("Herramienta para descargar videos") # Titulo
 
 text_prompt = "Ingrese el link del video que desea descargar: "
 prompt = Label(root, text = text_prompt, font = ('Courier', '15'),fg = 'black',)
@@ -133,7 +158,7 @@ video_link.place(x=45,y=65)
 
 
 # Boton de buscar
-btn_buscar = Button(root, text = 'Buscar', command=get_thumbnail)
+btn_buscar = Button(root, text = 'Buscar', command=lambda:[get_video_name(), get_thumbnail()])
 btn_buscar.place(x=110,y=100)
 
 btn_descargar = Button(root, text = 'Descargar', command=download_video)
@@ -152,6 +177,11 @@ img_logo_temp_2.place(x = 283, y = 207)
 
 img_logo_temp_3 = Label(root, image = '')
 img_logo_temp_3.place(x = 283, y = 269)  
+
+# Nombre del video
+
+video_name = Label(root, text = '', font = ('Courier', '12'),fg = 'black',)
+video_name.place(x=35,y=350)
 
 
 root.mainloop()
